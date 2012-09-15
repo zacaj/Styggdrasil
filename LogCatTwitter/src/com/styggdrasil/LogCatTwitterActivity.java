@@ -1,5 +1,9 @@
 package com.styggdrasil;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+
 import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -7,6 +11,7 @@ import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.TextView;
@@ -48,13 +53,21 @@ public class LogCatTwitterActivity extends Activity
 			try
 			{
 				log("Initialising...");
-				
+				String path=Environment.getExternalStorageDirectory().toString()+"/Android/data/com.zision.styggdrasil/";
+				log("Data folder: "+path);
+			    File directory = new File(path);
+			    directory.mkdirs();
+			    BufferedReader in=new BufferedReader(new FileReader(path+"user.txt"));
+			    String accessToken=in.readLine();
+			    String accessTokenSecret=in.readLine();
+			    in.close();
+			    
 				ConfigurationBuilder cb = new ConfigurationBuilder();
 				cb.setDebugEnabled(true)
-				  .setOAuthConsumerKey("")
-				  .setOAuthConsumerSecret("")
-				  .setOAuthAccessToken("")
-				  .setOAuthAccessTokenSecret("");
+				  .setOAuthConsumerKey("1Ysjec2smtfSHfTaZeOAA")
+				  .setOAuthConsumerSecret("fMzPJj4oFBgSlW1Ma2r79Y1kE0t7S7r1lvQXBnXSk")
+				  .setOAuthAccessToken(accessToken)
+				  .setOAuthAccessTokenSecret(accessTokenSecret);
 				
 				TwitterFactory factory = new TwitterFactory(cb.build());
 				
