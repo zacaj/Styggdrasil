@@ -4,7 +4,14 @@ import java.util.Map;
 import java.util.Vector;
 
 
+import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
+import twitter4j.AsyncTwitter;
+import twitter4j.AsyncTwitterFactory;
+import twitter4j.ResponseList;
+import twitter4j.Status;
+import twitter4j.TwitterAdapter;
+import twitter4j.TwitterListener;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 
@@ -12,6 +19,9 @@ import twitter4j.TwitterStreamFactory;
 public class TwitterHandler {
 	Vector<Column> columns;
 	Map<Long,Item> items;
+	
+	TwitterStreamFactory streamFactory;
+	AsyncTwitterFactory asyncFactory;
 	
 	public TwitterHandler()
 	{
@@ -34,11 +44,30 @@ public class TwitterHandler {
 		  .setOAuthConsumerSecret("fMzPJj4oFBgSlW1Ma2r79Y1kE0t7S7r1lvQXBnXSk")
 		  .setOAuthAccessToken(accessToken)
 		  .setOAuthAccessTokenSecret(accessTokenSecret);
+		Configuration config=cb.build();
+		streamFactory=new TwitterStreamFactory(config);
+		asyncFactory=new AsyncTwitterFactory(config);
 		
 		UserStream stream=new UserStream(this);
-		TwitterStream stream4j=new TwitterStreamFactory(cb.build()).getInstance();
+		TwitterStream stream4j=streamFactory.getInstance();
 		stream4j.addListener(stream);
 		stream4j.user();
+		
+		updateHomeTimeline();
+	}
+	public void updateHomeTimeline() {
+		TwitterListener listener = new TwitterAdapter() {
+	        @Override public void gotHomeTimeline(ResponseList<Status> statuses) {
+	        	for(Status status : statuses)
+	        	{
+	        		handleItem(new Tweet(status));//TODO make a factory(?) that will create Tweets/Retweets(/etc?) from Statuses
+	        	}
+	        }
+	    };
+		
+	    AsyncTwitter twitter=asyncFactory.getInstance();
+	    twitter.addListener(listener);
+	    twitter.getHomeTimeline();//TODO change to use Paging based on settings
 	}
 	public void handleItem(Item item)
 	{
