@@ -8,27 +8,22 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.ViewFlipper;
 
 
 public class LogCatTwitterActivity extends Activity
 {
 	private LinearLayout view;
 	private FrameLayout tweetView;
-	private ScrollView scrollView;
-	private LinearLayout tweetList;
-	private LogCatTwitterActivity lgta;
+	public TwitterHandler handler;
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-    	lgta=this;
         super.onCreate(savedInstanceState);
         
         setContentView(view=new LinearLayout(this));
@@ -44,14 +39,36 @@ public class LogCatTwitterActivity extends Activity
         	button.setHeight(50);
         	buttons.addView(button);
         }*/
+
+	    TwitterHandler handler=new TwitterHandler();
+	    handler.columns.add(new AndroidUIColumn(new EveryColumn(),this));
+	    handler.columns.add(new AndroidUIColumn(new MentionColumn("zacaj"),this));
+	    
+        tweetView.addView(((AndroidUIColumn)handler.columns.get(0)).view);        
         
-        tweetView.addView(scrollView = new ScrollView(this));
-    
-        scrollView.addView(tweetList=new LinearLayout(this));
-        tweetList.setOrientation(LinearLayout.VERTICAL);
-        
-        
-        new Thread(grabTimelineRunnable, "Twitter Thread").start();
+        log("Initialising...");
+		String path=Environment.getExternalStorageDirectory().toString()+"/Android/data/com.zision.styggdrasil/";
+		log("Data folder: "+path);
+	    File directory = new File(path);
+	    directory.mkdirs();
+	    try
+		{
+			BufferedReader in=new BufferedReader(new FileReader(path+"user.txt"));
+		    String accessToken=in.readLine();
+		    String accessTokenSecret=in.readLine();
+		    in.close();
+		    
+			handler.accessToken=accessToken;
+			handler.accessTokenSecret=accessTokenSecret;
+			handler.start();
+		}
+		catch (Exception ex)
+		{
+			log("Exception: "+ex.getLocalizedMessage());
+			for (StackTraceElement ste : ex.getStackTrace())
+				log(ste.toString());
+		}
+	    
     }
 	
 	private void log(final String status)
@@ -59,54 +76,4 @@ public class LogCatTwitterActivity extends Activity
 		Log.i("Twitter test", status);
 	}
     
-    private Runnable grabTimelineRunnable = new Runnable()
-	{
-		public void run()
-		{
-			try
-			{
-				log("Initialising...");
-				String path=Environment.getExternalStorageDirectory().toString()+"/Android/data/com.zision.styggdrasil/";
-				log("Data folder: "+path);
-			    File directory = new File(path);
-			    directory.mkdirs();
-			    BufferedReader in=new BufferedReader(new FileReader(path+"user.txt"));
-			    String accessToken=in.readLine();
-			    String accessTokenSecret=in.readLine();
-			    in.close();
-			    
-			    TwitterHandler handler=new TwitterHandler();
-				handler.accessToken=accessToken;
-				handler.accessTokenSecret=accessTokenSecret;
-				Column column=new EveryColumn() {
-					@Override public void newItem(Item item)
-					{
-						super.newItem(item);
-						if (item instanceof Tweet)
-						{
-							final Tweet tweet = (Tweet) item;
-							runOnUiThread(new Runnable()
-							{
-								@Override
-								public void run()
-								{
-									TextView text=new TextView(lgta);
-									text.setText(tweet.user.getName() + ": " + tweet.text);
-									tweetList.addView(text,0);//TODO not necessarally at the top, need to find correct spot
-								}
-							});
-						}
-					}
-				};
-				handler.columns.add(column);
-				handler.start();
-			}
-			catch (Exception ex)
-			{
-				log("Exception: "+ex.getLocalizedMessage());
-				for (StackTraceElement ste : ex.getStackTrace())
-					log(ste.toString());
-			}
-		}
-	};
 }
