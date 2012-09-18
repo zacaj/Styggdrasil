@@ -78,7 +78,7 @@ public class TwitterHandler {
 			}
 		else//   ?  Not sure exactly what should happen if we get the same tweet twice...
 		{
-			int i=0;//just here to provide some code to break on
+			@SuppressWarnings("unused") int i=0;//just here to provide some code to break on
 		}
 	}
 }

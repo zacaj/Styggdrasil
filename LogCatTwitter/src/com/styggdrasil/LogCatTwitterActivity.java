@@ -8,21 +8,48 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 
 public class LogCatTwitterActivity extends Activity
 {
-	private TextView textView;
+	private LinearLayout view;
+	private FrameLayout tweetView;
+	private ScrollView scrollView;
+	private LinearLayout tweetList;
+	private LogCatTwitterActivity lgta;
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+    	lgta=this;
         super.onCreate(savedInstanceState);
         
-        setContentView(textView = new TextView(this));
-        textView.append("Twitter test.\n");
+        setContentView(view=new LinearLayout(this));
+        view.setOrientation(LinearLayout.VERTICAL);
+        view.addView(tweetView=new FrameLayout(this));
+        /*LinearLayout buttons=new LinearLayout(this);
+        view.addView(buttons);
+        for(int i=0;i<4;i++)
+        {
+        	Button button=new Button(this);
+        	button.setText("Home");
+        	button.setWidth(buttons.getWidth()/4);
+        	button.setHeight(50);
+        	buttons.addView(button);
+        }*/
+        
+        tweetView.addView(scrollView = new ScrollView(this));
+    
+        scrollView.addView(tweetList=new LinearLayout(this));
+        tweetList.setOrientation(LinearLayout.VERTICAL);
+        
         
         new Thread(grabTimelineRunnable, "Twitter Thread").start();
     }
@@ -30,15 +57,6 @@ public class LogCatTwitterActivity extends Activity
 	private void log(final String status)
 	{
 		Log.i("Twitter test", status);
-		
-		runOnUiThread(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				textView.append(status + "\n");
-			}
-		});
 	}
     
     private Runnable grabTimelineRunnable = new Runnable()
@@ -60,7 +78,26 @@ public class LogCatTwitterActivity extends Activity
 			    TwitterHandler handler=new TwitterHandler();
 				handler.accessToken=accessToken;
 				handler.accessTokenSecret=accessTokenSecret;
-				Column column=new EveryColumn();
+				Column column=new EveryColumn() {
+					@Override public void newItem(Item item)
+					{
+						super.newItem(item);
+						if (item instanceof Tweet)
+						{
+							final Tweet tweet = (Tweet) item;
+							runOnUiThread(new Runnable()
+							{
+								@Override
+								public void run()
+								{
+									TextView text=new TextView(lgta);
+									text.setText(tweet.user.getName() + ": " + tweet.text);
+									tweetList.addView(text,0);//TODO not necessarally at the top, need to find correct spot
+								}
+							});
+						}
+					}
+				};
 				handler.columns.add(column);
 				handler.start();
 			}
