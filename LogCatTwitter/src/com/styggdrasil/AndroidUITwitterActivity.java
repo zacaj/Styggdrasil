@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -20,7 +21,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 
-public class LogCatTwitterActivity extends Activity
+public class AndroidUITwitterActivity extends Activity
 {
 	private RelativeLayout view;
 	private FrameLayout tweetView;
@@ -33,22 +34,16 @@ public class LogCatTwitterActivity extends Activity
         super.onCreate(savedInstanceState);
         
         setContentView(view=new RelativeLayout(this));
-        SeekBar sv;
         LinearLayout buttons=new LinearLayout(this);
         {
         	RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
         	lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         	view.addView(buttons,lp);
-        }
-        {
-        	RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
-        	lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-            view.addView(sv=new SeekBar(this),lp);
+        	buttons.setId(746);
         }
         {
         	RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
         	lp.addRule(RelativeLayout.ABOVE,buttons.getId());
-        	lp.addRule(RelativeLayout.BELOW,sv.getId());
             view.addView(tweetView=new FrameLayout(this),lp);
         }
 
@@ -58,6 +53,7 @@ public class LogCatTwitterActivity extends Activity
         	Button button=new Button(this);
         	LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
         	button.setText("Home");
+        	button.setOnClickListener(new ColumnButtonListener((AndroidUIColumn)handler.columns.lastElement(),tweetView));
         	buttons.addView(button,lp);
         }
 	    handler.columns.add(new AndroidUIColumn(new MentionColumn("zacaj"),this));
@@ -65,6 +61,7 @@ public class LogCatTwitterActivity extends Activity
         	Button button=new Button(this);
         	LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
         	button.setText("Mentions");
+        	button.setOnClickListener(new ColumnButtonListener((AndroidUIColumn)handler.columns.lastElement(),tweetView));
         	buttons.addView(button,lp);
         }
 	    

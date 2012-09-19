@@ -10,14 +10,18 @@ public class MentionColumn extends Column
 		username=name;
 	}
 	
-	@Override void newItem(Item item)
+	@Override boolean newItem(Item item)
 	{
 		if(item instanceof Tweet)
 		{
 			Tweet tweet=(Tweet)item;
 			if(tweet.text.contains(username))
+			{
 				contents.add(item);
+				return true;
+			}
 		}
+		return false;
 	}
 
 }

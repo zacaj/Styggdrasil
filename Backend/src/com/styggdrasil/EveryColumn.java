@@ -6,7 +6,7 @@ import android.util.Log;
 public class EveryColumn extends Column
 {
 
-	@Override void newItem(Item item)
+	@Override boolean newItem(Item item)
 	{
 		contents.add(item);
 
@@ -15,5 +15,6 @@ public class EveryColumn extends Column
 			Tweet tweet = (Tweet) item;
 			Log.d("Twitter test", tweet.user.getName() + ": " + tweet.text);
 		}
+		return true;
 	}
 }

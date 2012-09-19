@@ -20,6 +20,7 @@ public abstract class Column
 	 * to contents
 	 * 
 	 * @param item
+	 * @return Whether the item was added
 	 */
-	abstract void newItem(Item item);
+	abstract boolean newItem(Item item);
 }

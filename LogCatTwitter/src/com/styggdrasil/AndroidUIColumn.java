@@ -23,22 +23,24 @@ public class AndroidUIColumn extends Column
 		view.addView(tweetList=new LinearLayout(activity));
         tweetList.setOrientation(LinearLayout.VERTICAL);
 	}
-	public void newItem(Item item)
+	public boolean newItem(Item item)
 	{
-		parent.newItem(item);
-		if (item instanceof Tweet)
-		{
-			final Tweet tweet = (Tweet) item;
-			activity.runOnUiThread(new Runnable()
+		boolean ret=parent.newItem(item);
+		if(ret)
+			if (item instanceof Tweet)
 			{
-				@Override
-				public void run()
+				final Tweet tweet = (Tweet) item;
+				activity.runOnUiThread(new Runnable()
 				{
-					TextView text=new TextView(activity);
-					text.setText(tweet.user.getName() + ": " + tweet.text);
-					tweetList.addView(text,0);//TODO not necessarally at the top, need to find correct spot
-				}
-			});
-		}
+					@Override
+					public void run()
+					{
+						TextView text=new TextView(activity);
+						text.setText(tweet.user.getName() + ": " + tweet.text);
+						tweetList.addView(text,0);//TODO not necessarally at the top, need to find correct spot
+					}
+				});
+			}
+		return ret;
 	}
 }
