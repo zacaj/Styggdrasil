@@ -2,6 +2,7 @@ package com.styggdrasil;
 
 import android.app.Activity;
 import android.content.Context;
+import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ public class AndroidUIColumn extends Column
 		parent=_parent;
 		activity=_activity;
 		view = new ScrollView(activity);
+		view.setFillViewport(true);
 		view.addView(tweetList=new LinearLayout(activity));
         tweetList.setOrientation(LinearLayout.VERTICAL);
 	}

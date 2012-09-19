@@ -47,13 +47,14 @@ public class TwitterHandler {
 		Configuration config=cb.build();
 		streamFactory=new TwitterStreamFactory(config);
 		asyncFactory=new AsyncTwitterFactory(config);
+
+		updateHomeTimeline();
 		
 		UserStream stream=new UserStream(this);
 		TwitterStream stream4j=streamFactory.getInstance();
 		stream4j.addListener(stream);
 		stream4j.user();
 		
-		updateHomeTimeline();
 	}
 	public void updateHomeTimeline() {
 		TwitterListener listener = new TwitterAdapter() {
