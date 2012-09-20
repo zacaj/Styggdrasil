@@ -44,6 +44,7 @@ public class AndroidUITwitterActivity extends Activity
         {
         	RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
         	lp.addRule(RelativeLayout.ABOVE,buttons.getId());
+        	lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
             view.addView(tweetView=new FrameLayout(this),lp);
         }
 
@@ -64,9 +65,9 @@ public class AndroidUITwitterActivity extends Activity
         	button.setOnClickListener(new ColumnButtonListener((AndroidUIColumn)handler.columns.lastElement(),tweetView));
         	buttons.addView(button,lp);
         }
-	    
-        tweetView.addView(((AndroidUIColumn)handler.columns.get(0)).view);        
-        
+        {
+        	tweetView.addView(((AndroidUIColumn)handler.columns.get(0)).view);        
+        }
         log("Initialising...");
 		String path=Environment.getExternalStorageDirectory().toString()+"/Android/data/com.zision.styggdrasil/";
 		log("Data folder: "+path);

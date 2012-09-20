@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class AndroidUIColumn extends Column
@@ -20,7 +21,6 @@ public class AndroidUIColumn extends Column
 	public Column parent;
 	public ListView view;
 	public Activity activity;
-	public LinearLayout tweetList;
 	private Vector<DataSetObserver> observers;
 	
 	public AndroidUIColumn(Column _parent,Activity _activity)
@@ -29,9 +29,7 @@ public class AndroidUIColumn extends Column
 		activity=_activity;
 		view = new ListView(activity);
 		observers=new Vector<DataSetObserver>();
-		ListAdapter adapter=new ListAdapter() {
-				
-			
+		ListAdapter adapter=new ListAdapter() {			
 			@Override public int getCount()
 			{
 				return parent.contents.size();
@@ -106,47 +104,27 @@ public class AndroidUIColumn extends Column
 			}
 			
 		};
+		
+		
 		view.setAdapter(adapter);
-		//view.setFillViewport(true);
-		//view.addView(tweetList=new LinearLayout(activity));
-        //tweetList.setOrientation(LinearLayout.VERTICAL);
 	}
 	public boolean newItem(Item item)
 	{
-		if (!(item instanceof Tweet))
+		if (!(item instanceof Tweet))//TODO separate Item type handling...  somehow
 			return false;
 		final Tweet tweet = (Tweet) item;
-		activity.runOnUiThread(new Runnable()
+		activity.runOnUiThread(new Runnable()//TODO should this really be on a separate thread?  Why IS it on a separate thread?  I have no idea.  Might have been by mistake?  Who knows?
 		{
 			@Override
 			public void run()
 			{
-				//TextView text=new TextView(activity);
-				//text.setText(tweet.user.getName() + ": " + tweet.text);
-				//tweetList.addView(text,0);//TODO not necessarally at the top, need to find correct spot
 				boolean ret=parent.newItem(tweet);
-				Log.i("Twitter test", "New tweet");
 				for(DataSetObserver observer:observers)
 				{
-					Log.i("Twitter test", "notified");
 					observer.onChanged();
 				}
 			}
 		});
-		/*if(ret)
-			if (item instanceof Tweet)
-			{
-				activity.runOnUiThread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						TextView text=new TextView(activity);
-						text.setText(tweet.user.getName() + ": " + tweet.text);
-						tweetList.addView(text,0);//TODO not necessarally at the top, need to find correct spot
-					}
-				});
-			}*/
 		return true;
 	}
 }
