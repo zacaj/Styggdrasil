@@ -8,7 +8,7 @@ public class EveryColumn extends Column
 
 	@Override boolean newItem(Item item)
 	{
-		contents.add(item);
+		addItem(item);
 
 		if (item instanceof Tweet)
 		{

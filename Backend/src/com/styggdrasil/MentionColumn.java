@@ -17,7 +17,7 @@ public class MentionColumn extends Column
 			Tweet tweet=(Tweet)item;
 			if(tweet.text.contains(username))
 			{
-				contents.add(item);
+				addItem(item);
 				return true;
 			}
 		}

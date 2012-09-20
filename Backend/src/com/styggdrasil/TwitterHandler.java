@@ -72,7 +72,7 @@ public class TwitterHandler {
 	}
 	public void handleItem(Item item)
 	{
-		if(items.put(item.id,item)==null)
+		if(items.put(item.time,item)==null)
 			for(Column column : columns)
 			{
 				column.newItem(item);
