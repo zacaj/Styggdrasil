@@ -18,9 +18,15 @@ public class UserStream extends UserStreamAdapter
 		handler = _handler;
 	}
 
-	public void onStatus(Status status)
+	public void onStatus(final Status status)
 	{
-		handler.handleItem(new Tweet(status));
+		new Thread(new Runnable() {
+			@Override 
+			public void run()
+			{
+				handler.handleItem(new Tweet(status,handler));//TODO call on another thread
+			}
+		}).start();
 	}
 
 	@Override public void onDeletionNotice(StatusDeletionNotice arg0)

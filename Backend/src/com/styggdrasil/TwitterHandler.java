@@ -10,7 +10,10 @@ import twitter4j.AsyncTwitter;
 import twitter4j.AsyncTwitterFactory;
 import twitter4j.ResponseList;
 import twitter4j.Status;
+import twitter4j.Twitter;
 import twitter4j.TwitterAdapter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
 import twitter4j.TwitterListener;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
@@ -18,10 +21,12 @@ import twitter4j.TwitterStreamFactory;
 //some redesign going to be needed to handle multiple accounts, but 
 public class TwitterHandler {
 	Vector<Column> columns;
+	//id,item
 	Map<Long,Item> items;
 	
 	TwitterStreamFactory streamFactory;
 	AsyncTwitterFactory asyncFactory;
+	TwitterFactory twitterFactory;
 	
 	public TwitterHandler()
 	{
@@ -47,6 +52,7 @@ public class TwitterHandler {
 		Configuration config=cb.build();
 		streamFactory=new TwitterStreamFactory(config);
 		asyncFactory=new AsyncTwitterFactory(config);
+		twitterFactory=new TwitterFactory(config);
 
 		updateHomeTimeline();
 		
@@ -57,11 +63,18 @@ public class TwitterHandler {
 		
 	}
 	public void updateHomeTimeline() {
+		final TwitterHandler handler=this;
 		TwitterListener listener = new TwitterAdapter() {
 	        @Override public void gotHomeTimeline(ResponseList<Status> statuses) {
-	        	for(Status status : statuses)
+	        	for(final Status status : statuses)
 	        	{
-	        		handleItem(new Tweet(status));//TODO make a factory(?) that will create Tweets/Retweets(/etc?) from Statuses
+	        		new Thread(new Runnable() {
+	        			@Override 
+						public void run()
+						{
+	        				handleItem(new Tweet(status, handler));//TODO make a factory(?) that will create Tweets/Retweets(/etc?) from Statuses
+						}
+	        		}).start();
 	        	}
 	        }
 	    };
@@ -80,6 +93,38 @@ public class TwitterHandler {
 		else//   ?  Not sure exactly what should happen if we get the same tweet twice...
 		{
 			@SuppressWarnings("unused") int i=0;//just here to provide some code to break on
+		}
+	}
+	/**
+	 * Makes network requests, do not run on ui thread
+	 * @param id
+	 * @return
+	 */
+	public Tweet getTweet(long id)
+	{
+		Item item=null;
+		if((item=items.get(id))!=null)
+		{
+			return (Tweet)item;
+		}
+		else
+		{
+			Twitter twitter=twitterFactory.getInstance();
+			Tweet tweet=null;
+			while(tweet==null)
+			{
+				try
+				{
+					Status status=twitter.showStatus(id);
+					tweet=new Tweet(status,this);
+				}
+				catch (TwitterException e)
+				{
+					// TODO error handling?
+					e.printStackTrace();
+				}
+			}
+			return tweet;
 		}
 	}
 }

@@ -4,6 +4,7 @@ public class User
 {
 	long	id;
 	String	username, fullname;
+	//TODO profile pictures.  can get url easily, but how/where to download?
 
 	public User(twitter4j.User user)
 	{
@@ -11,6 +12,7 @@ public class User
 		username = user.getScreenName();
 		fullname = user.getName();
 		t4j = user;
+		
 	}
 
 	String getName()
