@@ -29,6 +29,10 @@ public class Tweet extends Item
 		user = new User(status.getUser());
 		date=status.getCreatedAt();
 		time=date.getTime();
-		inReplyTo=handler.getTweet(status.getInReplyToStatusId());
+		long replyId=status.getInReplyToStatusId();
+		if(replyId==-1)
+			inReplyTo=null;
+		else
+			inReplyTo=handler.getTweet(replyId);
 	}
 }
