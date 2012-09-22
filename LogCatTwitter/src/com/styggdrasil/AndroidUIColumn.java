@@ -63,7 +63,7 @@ public class AndroidUIColumn extends Column
 				String text=tweet.user.getName() + ":: " + tweet.text+"\n\t";
 				//while()
 				Tweet reply=tweet;
-				while((reply=reply.inReplyTo)!=null && 0)
+				while((reply=reply.inReplyTo)!=null && false)
 					text+=reply.user.getName() + ":: " + reply.text+"\n\t";
 				((TextView)arg1).setText(text);
 				return arg1;
