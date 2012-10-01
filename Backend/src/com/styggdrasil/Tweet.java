@@ -13,14 +13,14 @@ public class Tweet extends Item
 	public User   user;
 	public Status t4j;
 	public Date   date;
-	private TwitterHandler handler;
+	private AccountHandler handler;
 
 	/**
 	 * SHOULD NEVER BE CALLED ON UI THREAD, MAY NEED TO ACCESS INTERNET
 	 * @param status
 	 * @param _handler
 	 */
-	public Tweet(Status status,TwitterHandler _handler)
+	public Tweet(Status status,AccountHandler _handler)
 	{
 		handler=_handler;
 		t4j = status;

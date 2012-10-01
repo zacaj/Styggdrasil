@@ -11,9 +11,9 @@ import twitter4j.UserStreamAdapter;
 public class UserStream extends UserStreamAdapter
 {
 
-	TwitterHandler	handler;
+	AccountHandler	handler;
 
-	public UserStream(TwitterHandler _handler)
+	public UserStream(AccountHandler _handler)
 	{
 		handler = _handler;
 	}

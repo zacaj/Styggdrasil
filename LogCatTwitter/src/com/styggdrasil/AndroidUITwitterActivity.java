@@ -25,7 +25,7 @@ public class AndroidUITwitterActivity extends Activity
 {
 	private RelativeLayout view;
 	private FrameLayout tweetView;
-	public TwitterHandler handler;
+	public AccountHandler handler;
 	
     /** Called when the activity is first created. */
     @Override
@@ -48,7 +48,7 @@ public class AndroidUITwitterActivity extends Activity
             view.addView(tweetView=new FrameLayout(this),lp);
         }
 
-	    TwitterHandler handler=new TwitterHandler();
+	    AccountHandler handler=new AccountHandler();
 	    handler.columns.add(new AndroidUIColumn(new EveryColumn(),this));
         {
         	Button button=new Button(this);
@@ -78,10 +78,13 @@ public class AndroidUITwitterActivity extends Activity
 			BufferedReader in=new BufferedReader(new FileReader(path+"user.txt"));
 		    String accessToken=in.readLine();
 		    String accessTokenSecret=in.readLine();
+		    String restUrl=in.readLine();
 		    in.close();
 		    
 			handler.accessToken=accessToken;
 			handler.accessTokenSecret=accessTokenSecret;
+			if(restUrl!=null)
+				handler.restUrl=restUrl;
 			handler.start();
 		}
 		catch (Exception ex)

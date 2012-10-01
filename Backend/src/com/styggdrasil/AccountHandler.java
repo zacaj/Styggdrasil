@@ -18,7 +18,7 @@ import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
 //some redesign going to be needed to handle multiple accounts, but 
-public class TwitterHandler {
+public class AccountHandler {
 	Vector<Column> columns;
 	//id,item
 	Map<Long,Item> items;
@@ -27,23 +27,26 @@ public class TwitterHandler {
 	AsyncTwitterFactory asyncFactory;
 	TwitterFactory twitterFactory;
 	
-	public TwitterHandler()
+	public AccountHandler()
 	{
 		columns=new Vector<Column>();
 		items=new HashMap<Long,Item>();
+		restUrl=null;
 	}
 	
-	public TwitterHandler(String accessToken, String accessTokenSecret)
+	public AccountHandler(String accessToken, String accessTokenSecret)
 	{
 		columns=new Vector<Column>();
 		items=new HashMap<Long,Item>();
 		this.accessToken = accessToken;
 		this.accessTokenSecret = accessTokenSecret;
+		restUrl=null;
 	}
 	
 	//Configuration variables
 	String accessToken;
 	String accessTokenSecret;
+	String restUrl;
 	
 	/**
 	 * Starts the handler.  Make sure configure it first.
@@ -56,6 +59,8 @@ public class TwitterHandler {
 		  .setOAuthConsumerSecret("fMzPJj4oFBgSlW1Ma2r79Y1kE0t7S7r1lvQXBnXSk")
 		  .setOAuthAccessToken(accessToken)
 		  .setOAuthAccessTokenSecret(accessTokenSecret);
+		if(restUrl!=null)
+			cb.setRestBaseURL(restUrl);
 		Configuration config=cb.build();
 		streamFactory=new TwitterStreamFactory(config);
 		asyncFactory=new AsyncTwitterFactory(config);
@@ -70,7 +75,7 @@ public class TwitterHandler {
 		
 	}
 	public void updateHomeTimeline() {
-		final TwitterHandler handler=this;
+		final AccountHandler handler=this;
 		TwitterListener listener = new TwitterAdapter() {
 	        @Override public void gotHomeTimeline(ResponseList<Status> statuses) {
 	        	for(final Status status : statuses)
