@@ -2,6 +2,7 @@ package com.styggdrasil;
 
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.SortedSet;
 import java.util.Set;
 import java.util.Vector;
@@ -9,11 +10,13 @@ import java.util.Vector;
 
 public abstract class Column
 {
-	Vector<Item>	contents;// Needs to be a Vector for random access.  Use addItem to insert so it stays sorted
+	protected Vector<Item>      contents;  // Needs to be a Vector for random access.  Use addItem to insert so it stays sorted
+	private Set<ColumnObserver> observers; // Using a Set, as this describes the collection best, but feel free to change
 
 	public Column()
 	{
 		contents = new Vector<Item>();
+		observers = new HashSet<ColumnObserver>();
 	}
 
 	/**
@@ -25,16 +28,37 @@ public abstract class Column
 	 * @param item
 	 * @return Whether the item was added
 	 */
-	abstract boolean newItem(Item item);
+	public abstract boolean newItem(Item item);
 	
 	/**
 	 * Inserts an item into contents ordered based on item.time
 	 * @param item
 	 */
-	public void addItem(Item item)
+	public synchronized void addItem(Item item)
 	{
 		int index=Collections.binarySearch(contents,item);
 		if(index<0) index=~index;
 		contents.add(index,item);
+		
+		for (ColumnObserver co : observers)
+			co.onItemAdded(index, item);
+	}
+	
+	/**
+	 * Attaches an observer to the Column 
+	 * @param observer
+	 */
+	public void addObserver(ColumnObserver observer)
+	{
+		observers.add(observer);
+	}
+	
+	/**
+	 * Detaches an observer from the Column
+	 * @param observer
+	 */
+	public void removeObserver(ColumnObserver observer)
+	{
+		observers.remove(observer);
 	}
 }

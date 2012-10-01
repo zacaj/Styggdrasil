@@ -7,13 +7,13 @@ import twitter4j.Status;
 
 public class Tweet extends Item
 {
-	long	id;
-	String	text;
-	Tweet inReplyTo;
-	User	user;
-	Status	t4j;
-	Date date;
-	TwitterHandler handler;
+	public long	  id;
+	public String text;
+	public Tweet  inReplyTo;
+	public User   user;
+	public Status t4j;
+	public Date   date;
+	private TwitterHandler handler;
 
 	/**
 	 * SHOULD NEVER BE CALLED ON UI THREAD, MAY NEED TO ACCESS INTERNET

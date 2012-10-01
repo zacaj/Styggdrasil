@@ -10,7 +10,8 @@ public class MentionColumn extends Column
 		username=name;
 	}
 	
-	@Override boolean newItem(Item item)
+	@Override
+	public boolean newItem(Item item)
 	{
 		if(item instanceof Tweet)
 		{

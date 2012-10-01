@@ -3,9 +3,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-
-import twitter4j.conf.Configuration;
-import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.AsyncTwitter;
 import twitter4j.AsyncTwitterFactory;
 import twitter4j.ResponseList;
@@ -17,6 +14,8 @@ import twitter4j.TwitterFactory;
 import twitter4j.TwitterListener;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
+import twitter4j.conf.Configuration;
+import twitter4j.conf.ConfigurationBuilder;
 
 //some redesign going to be needed to handle multiple accounts, but 
 public class TwitterHandler {
@@ -32,6 +31,14 @@ public class TwitterHandler {
 	{
 		columns=new Vector<Column>();
 		items=new HashMap<Long,Item>();
+	}
+	
+	public TwitterHandler(String accessToken, String accessTokenSecret)
+	{
+		columns=new Vector<Column>();
+		items=new HashMap<Long,Item>();
+		this.accessToken = accessToken;
+		this.accessTokenSecret = accessTokenSecret;
 	}
 	
 	//Configuration variables
@@ -126,5 +133,23 @@ public class TwitterHandler {
 			}
 			return tweet;
 		}
+	}
+	
+	/**
+	 * Adds a Column to the handler
+	 * @param c Column to add
+	 */
+	public void addColumn(Column c)
+	{
+		columns.add(c);
+	}
+	
+	/**
+	 * Removes a Column from the handler
+	 * @param c Column to remove
+	 */
+	public void removeColumn(Column c)
+	{
+		columns.remove(c);
 	}
 }

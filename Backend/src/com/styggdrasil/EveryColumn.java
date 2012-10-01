@@ -6,7 +6,8 @@ import android.util.Log;
 public class EveryColumn extends Column
 {
 
-	@Override boolean newItem(Item item)
+	@Override
+	public boolean newItem(Item item)
 	{
 		addItem(item);
 
