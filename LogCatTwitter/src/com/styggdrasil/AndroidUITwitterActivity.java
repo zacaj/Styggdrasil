@@ -49,24 +49,26 @@ public class AndroidUITwitterActivity extends Activity
         }
 
 	    AccountHandler handler=new AccountHandler();
-	    handler.columns.add(new AndroidUIColumn(new EveryColumn(),this));
+	    Column column;
+	    handler.columns.add(column=new EveryColumn());
         {
+        	AndroidUIColumnObserver observer=new AndroidUIColumnObserver(column,this);
         	Button button=new Button(this);
         	LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
         	button.setText("Home");
-        	button.setOnClickListener(new ColumnButtonListener((AndroidUIColumn)handler.columns.lastElement(),tweetView));
+        	button.setOnClickListener(new ColumnButtonListener(observer,tweetView));
         	buttons.addView(button,lp);
+        	
+        	tweetView.addView(observer.view);        
         }
-	    handler.columns.add(new AndroidUIColumn(new MentionColumn("zacaj"),this));
+	    handler.columns.add(column=(new MentionColumn("zacaj")));
         {
+        	AndroidUIColumnObserver observer=new AndroidUIColumnObserver(column,this);
         	Button button=new Button(this);
         	LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
         	button.setText("Mentions");
-        	button.setOnClickListener(new ColumnButtonListener((AndroidUIColumn)handler.columns.lastElement(),tweetView));
+        	button.setOnClickListener(new ColumnButtonListener(observer,tweetView));
         	buttons.addView(button,lp);
-        }
-        {
-        	tweetView.addView(((AndroidUIColumn)handler.columns.get(0)).view);        
         }
         log("Initialising...");
 		String path=Environment.getExternalStorageDirectory().toString()+"/Android/data/com.zision.styggdrasil/";

@@ -16,33 +16,34 @@ import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class AndroidUIColumn extends Column
+public class AndroidUIColumnObserver implements ColumnObserver
 {
-	public Column parent;
+	public Column column;
 	public ListView view;
 	public Activity activity;
 	private Vector<DataSetObserver> observers;
 	
-	public AndroidUIColumn(Column _parent,Activity _activity)
+	public AndroidUIColumnObserver(Column _column,Activity _activity)
 	{
-		parent=_parent;
+		column=_column;
+		column.addObserver(this);
 		activity=_activity;
 		view = new ListView(activity);
 		observers=new Vector<DataSetObserver>();
 		ListAdapter adapter=new ListAdapter() {			
 			@Override public int getCount()
 			{
-				return parent.contents.size();
+				return column.contents.size();
 			}
 
 			@Override public Object getItem(int arg0)
 			{
-				return parent.contents.get(arg0);
+				return column.contents.get(arg0);
 			}
 
 			@Override public long getItemId(int arg0)
 			{
-				return parent.contents.get(arg0).time;
+				return column.contents.get(arg0).time;
 			}
 
 			@Override public int getItemViewType(int arg0)
@@ -53,7 +54,7 @@ public class AndroidUIColumn extends Column
 
 			@Override public View getView(int arg0, View arg1, ViewGroup arg2)
 			{
-				Tweet tweet=(Tweet)parent.contents.get(arg0);
+				Tweet tweet=(Tweet)column.contents.get(arg0);
 				if(arg1==null || !(arg1 instanceof TextView))
 				{
 					arg1=new TextView(activity);
@@ -81,7 +82,7 @@ public class AndroidUIColumn extends Column
 
 			@Override public boolean isEmpty()
 			{
-				return parent.contents.isEmpty();
+				return column.contents.isEmpty();
 			}
 			
 			@Override public void registerDataSetObserver(
@@ -113,23 +114,32 @@ public class AndroidUIColumn extends Column
 		
 		view.setAdapter(adapter);
 	}
-	public boolean newItem(Item item)
+	@Override public void onItemAdded(int index, Item item)
 	{
-		if (!(item instanceof Tweet))//TODO separate Item type handling...  somehow
-			return false;
-		final Tweet tweet = (Tweet) item;
 		activity.runOnUiThread(new Runnable()//TODO should this really be on a separate thread?  Why IS it on a separate thread?  I have no idea.  Might have been by mistake?  Who knows?
 		{
 			@Override
 			public void run()
 			{
-				boolean ret=parent.newItem(tweet);
 				for(DataSetObserver observer:observers)
 				{
 					observer.onChanged();
 				}
 			}
 		});
-		return true;
+	}
+	@Override public void onItemRemoved(int index, Item item)
+	{
+		activity.runOnUiThread(new Runnable()//TODO should this really be on a separate thread?  Why IS it on a separate thread?  I have no idea.  Might have been by mistake?  Who knows?
+		{
+			@Override
+			public void run()
+			{
+				for(DataSetObserver observer:observers)
+				{
+					observer.onChanged();
+				}
+			}
+		});	
 	}
 }

@@ -5,9 +5,9 @@ import android.widget.FrameLayout;
 
 public class ColumnButtonListener implements View.OnClickListener
 {
-	AndroidUIColumn column;
+	AndroidUIColumnObserver column;
 	FrameLayout tweetView;
-	public ColumnButtonListener(AndroidUIColumn _column,FrameLayout _view)
+	public ColumnButtonListener(AndroidUIColumnObserver _column,FrameLayout _view)
 	{
 		column=_column;
 		tweetView=_view;
