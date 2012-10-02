@@ -6,6 +6,7 @@ import java.util.Calendar;
 public abstract class Item implements Comparable<Item>
 {
 	long time;
+	public final int type=0;
 	public Item()
 	{
 		time=Calendar.getInstance().getTimeInMillis();
@@ -14,5 +15,9 @@ public abstract class Item implements Comparable<Item>
 	public int compareTo(Item i)
 	{
 		return (int) (i.time-time);//newest on top
+	}
+	public int getType()
+	{
+		return type;
 	}
 }

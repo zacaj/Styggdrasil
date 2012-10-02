@@ -10,29 +10,39 @@ public class Tweet extends Item
 	public long	  id;
 	public String text;
 	public Tweet  inReplyTo;
+	public long replyId;// -1 if not in reply to a tweet
 	public User   user;
 	public Status t4j;
 	public Date   date;
-	private AccountHandler handler;
+	public String dateString;
+	public AccountHandler handler;
+	public final static int type=1;
 
-	/**
-	 * SHOULD NEVER BE CALLED ON UI THREAD, MAY NEED TO ACCESS INTERNET
-	 * @param status
-	 * @param _handler
-	 */
-	public Tweet(Status status,AccountHandler _handler)
+	protected Tweet(Status status,AccountHandler _handler)//TODO if have multiple accounts, should tweets keep track of handler?  Separate tweets per account even if both follow, or...?
 	{
-		handler=_handler;
 		t4j = status;
+		handler=_handler;
 		id = status.getId();
 		text = status.getText();
-		user = new User(status.getUser());
+		user = handler.getUser(status.getUser());
 		date=status.getCreatedAt();
+		dateString=new Long(date.getHours()).toString()+":"+new Long(date.getMinutes()).toString();//TODO 12 hour time+padding
 		time=date.getTime();
-		long replyId=status.getInReplyToStatusId();
+		replyId=status.getInReplyToStatusId();
 		if(replyId==-1)
 			inReplyTo=null;
 		else
-			inReplyTo=handler.getTweet(replyId);
+			inReplyTo=handler.getLoadedTweet(replyId);
+	}
+	public int getType()
+	{
+		return type;
+	}
+	public static Tweet createTweet(Status status,AccountHandler handler)
+	{
+		if(status.isRetweet())
+			return new Retweet(status,handler);
+		else
+			return new Tweet(status,handler);
 	}
 }

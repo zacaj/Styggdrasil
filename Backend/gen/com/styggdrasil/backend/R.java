@@ -11,8 +11,9 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
-        public static int ic_action_search=0x7f020000;
-        public static int ic_launcher=0x7f020001;
+        public static int defaultpic=0x7f020000;
+        public static int ic_action_search=0x7f020001;
+        public static int ic_launcher=0x7f020002;
     }
     public static final class string {
         public static int app_name=0x7f030000;

@@ -84,7 +84,7 @@ public class AccountHandler {
 	        			@Override 
 						public void run()
 						{
-	        				handleItem(new Tweet(status, handler));//TODO make a factory(?) that will create Tweets/Retweets(/etc?) from Statuses
+	        				handleItem(Tweet.createTweet(status, handler));//TODO make a factory(?) that will create Tweets/Retweets(/etc?) from Statuses
 						}
 	        		}).start();
 	        	}
@@ -107,6 +107,7 @@ public class AccountHandler {
 			@SuppressWarnings("unused") int i=0;//just here to provide some code to break on
 		}
 	}
+	
 	/**
 	 * Makes network requests, do not run on ui thread
 	 * @param id
@@ -114,8 +115,8 @@ public class AccountHandler {
 	 */
 	public Tweet getTweet(long id)
 	{
-		Item item=null;
-		if((item=items.get(id))!=null)
+		Item item=getLoadedTweet(id);
+		if(item!=null)
 		{
 			return (Tweet)item;
 		}
@@ -128,7 +129,7 @@ public class AccountHandler {
 				try
 				{
 					Status status=twitter.showStatus(id);
-					tweet=new Tweet(status,this);
+					tweet=Tweet.createTweet(status,this);
 				}
 				catch (TwitterException e)
 				{
@@ -138,6 +139,43 @@ public class AccountHandler {
 			}
 			return tweet;
 		}
+	}
+	
+	public Tweet getLoadedTweet(long id)//TODO add a LoadingTweet class that will automatically load "other" tweets
+	{
+		Item item=null;
+		if((item=items.get(id))!=null)
+		{
+			return (Tweet)item;
+		}
+		else 
+			return null;
+	}
+	private Map<Long,User> users=new HashMap<Long,User>();
+	public User getUser(long id)
+	{
+		User user=users.get(id);
+		if(user==null)
+		{
+			try
+			{
+				return getUser(twitterFactory.getInstance().showUser(id));//TODO put user loading in thread, some kind of autogenned temp User returned instantly?
+			}
+			catch (TwitterException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return user;
+	}
+	public User getUser(twitter4j.User t4juser)
+	{
+		User user=users.get(t4juser.getId());
+		if(user==null)
+			return new User(t4juser);
+		else
+			return user;
 	}
 	
 	/**
@@ -157,4 +195,5 @@ public class AccountHandler {
 	{
 		columns.remove(c);
 	}
+
 }

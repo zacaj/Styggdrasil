@@ -24,7 +24,7 @@ public class UserStream extends UserStreamAdapter
 			@Override 
 			public void run()
 			{
-				handler.handleItem(new Tweet(status,handler));//TODO call on another thread
+				handler.handleItem(Tweet.createTweet(status,handler));
 			}
 		}).start();
 	}
