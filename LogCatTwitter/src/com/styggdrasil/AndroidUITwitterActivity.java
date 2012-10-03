@@ -14,7 +14,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
@@ -47,7 +49,7 @@ public class AndroidUITwitterActivity extends Activity
         	lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
             view.addView(tweetView=new FrameLayout(this),lp);
         }
-
+        
 	    AccountHandler handler=new AccountHandler();
 	    Column column;
 	    handler.columns.add(column=new EveryColumn());
@@ -95,7 +97,7 @@ public class AndroidUITwitterActivity extends Activity
 			for (StackTraceElement ste : ex.getStackTrace())
 				log(ste.toString());
 		}
-	    
+		
     }
 	
 	private void log(final String status)

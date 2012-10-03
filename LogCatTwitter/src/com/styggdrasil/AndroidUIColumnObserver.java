@@ -152,11 +152,12 @@ public class AndroidUIColumnObserver implements ColumnObserver
 							RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);	        	
 							lp.addRule(RelativeLayout.BELOW,2);
 				        	lp.addRule(RelativeLayout.BELOW,3);
-				        	lp.addRule(RelativeLayout.RIGHT_OF,2);
+				        	lp.addRule(RelativeLayout.RIGHT_OF,4);
 				        	layout.addView(text,lp);
 						}			
 						text.setText(tweet.text);
 					}
+					view.setOnClickListener(new TweetSelectListener(tweet));
 					break;
 				}
 				}
