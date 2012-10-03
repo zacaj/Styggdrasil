@@ -83,6 +83,7 @@ public class AndroidUIColumnObserver implements ColumnObserver
 								lp.addRule(RelativeLayout.RIGHT_OF,2);
 					        	lp.addRule(RelativeLayout.LEFT_OF,3);
 					        	lp.addRule(RelativeLayout.ABOVE,1);
+					        	text.setGravity(Gravity.BOTTOM);
 					        	layout.addView(text,lp);
 							}				
 							String str="RT by "+retweet.retweetedBy.getName();

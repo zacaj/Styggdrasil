@@ -44,6 +44,7 @@ public class AccountHandler {
 	}
 	
 	//Configuration variables
+	String username;//TODO actually set this internally
 	String accessToken;
 	String accessTokenSecret;
 	String restUrl;
@@ -151,6 +152,18 @@ public class AccountHandler {
 		else 
 			return null;
 	}
+
+	public Tweet getTweet(Status status)
+	{
+		Item item=getLoadedTweet(status.getId());
+		if(item!=null)
+		{
+			return (Tweet)item;
+		}
+		else
+			return Tweet.createTweet(status, this);
+	}
+	
 	private Map<Long,User> users=new HashMap<Long,User>();
 	public User getUser(long id)
 	{

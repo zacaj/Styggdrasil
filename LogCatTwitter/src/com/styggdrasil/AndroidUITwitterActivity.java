@@ -87,6 +87,7 @@ public class AndroidUITwitterActivity extends Activity
 		    
 			handler.accessToken=accessToken;
 			handler.accessTokenSecret=accessTokenSecret;
+			handler.username="zacaj_";
 			if(restUrl!=null)
 				handler.restUrl=restUrl;
 			handler.start();

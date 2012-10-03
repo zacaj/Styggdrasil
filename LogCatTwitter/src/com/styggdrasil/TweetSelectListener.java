@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.RelativeLayout;
 
+
 public class TweetSelectListener implements OnClickListener
 {
 	static LinearLayout menu=null;
@@ -35,18 +36,65 @@ public class TweetSelectListener implements OnClickListener
         		Button button=new Button(v.getContext());
             	LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
             	button.setText("Reply");
+            	button.setOnClickListener(new OnClickListener(){
+					@Override public void onClick(View v)
+					{
+						
+					}
+            	});
             	menu.addView(button,lp);
         	}
+        	if(!tweet.user.username.equalsIgnoreCase(tweet.handler.username))
         	{
         		Button button=new Button(v.getContext());
             	LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
             	button.setText("Retweet");
+            	button.setOnClickListener(new OnClickListener(){
+					@Override public void onClick(View v)
+					{
+						tweet.retweet();
+					}
+            	});
             	menu.addView(button,lp);
         	}
+        	else
+        	{
+        		Button button=new Button(v.getContext());
+            	LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+            	button.setText("Delete");
+            	button.setOnClickListener(new OnClickListener(){
+					@Override public void onClick(View v)
+					{
+						tweet.delete();
+					}
+            	});
+            	menu.addView(button,lp);
+        	}
+        	
+        	if(tweet.isFavorited)
+        	{
+        		Button button=new Button(v.getContext());
+            	LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+            	button.setText("Unfavorite");
+            	button.setOnClickListener(new OnClickListener(){
+					@Override public void onClick(View v)
+					{
+						tweet.unfavorite();
+					}
+            	});
+            	menu.addView(button,lp);
+        	}
+        	else
         	{
         		Button button=new Button(v.getContext());
             	LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
             	button.setText("Favorite");
+            	button.setOnClickListener(new OnClickListener(){
+					@Override public void onClick(View v)
+					{
+						tweet.favorite();
+					}
+            	});
             	menu.addView(button,lp);
         	}
         	RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
