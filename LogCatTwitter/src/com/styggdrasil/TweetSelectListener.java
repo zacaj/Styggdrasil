@@ -97,9 +97,10 @@ public class TweetSelectListener implements OnClickListener
             	});
             	menu.addView(button,lp);
         	}
-        	RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-        	lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        	RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
+        	//lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         	lp.addRule(RelativeLayout.BELOW,1);
+        	lp.addRule(RelativeLayout.BELOW,4);
         	menu.setId(6);
         	((RelativeLayout) v).addView(menu,lp);
         	currentTweet=(RelativeLayout) v;

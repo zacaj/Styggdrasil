@@ -1,14 +1,17 @@
 package com.styggdrasil;
 
+import android.app.Activity;
 import android.view.View;
 import android.widget.FrameLayout;
 
 public class ColumnButtonListener implements View.OnClickListener
 {
-	AndroidUIColumnObserver column;
+	UIColumn column;
 	FrameLayout tweetView;
-	public ColumnButtonListener(AndroidUIColumnObserver _column,FrameLayout _view)
+	UITwitterActivity activity;
+	public ColumnButtonListener(UIColumn _column,FrameLayout _view,UITwitterActivity _activity)
 	{
+		activity=_activity;
 		column=_column;
 		tweetView=_view;
 	}
@@ -16,5 +19,8 @@ public class ColumnButtonListener implements View.OnClickListener
 	{
 		tweetView.removeAllViews();
 		tweetView.addView(column.view);
+		if(activity.columnStack.contains(column))
+				activity.columnStack.remove(column);
+		activity.columnStack.add(column);
 	}
 }

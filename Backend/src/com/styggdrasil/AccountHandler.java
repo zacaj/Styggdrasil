@@ -75,6 +75,12 @@ public class AccountHandler {
 		stream4j.user();
 		
 	}
+	
+	public void sendTweet(String text)
+	{
+		asyncFactory.getInstance().updateStatus(text);
+	}
+	
 	public void updateHomeTimeline() {
 		final AccountHandler handler=this;
 		TwitterListener listener = new TwitterAdapter() {

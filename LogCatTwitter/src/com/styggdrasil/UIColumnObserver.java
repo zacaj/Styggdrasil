@@ -20,19 +20,21 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.FrameLayout.LayoutParams;
 
-public class AndroidUIColumnObserver implements ColumnObserver
+public class UIColumnObserver extends UIColumn implements ColumnObserver
 {
 	public Column column;
-	public ListView view;
+	public ListView listView;
 	public Activity activity;
 	private Vector<DataSetObserver> observers;
 	
-	public AndroidUIColumnObserver(Column _column,Activity _activity)
+	public UIColumnObserver(Column _column,Activity _activity)
 	{
+		super(_activity);
 		column=_column;
 		column.addObserver(this);
 		activity=_activity;
-		view = new ListView(activity);
+		listView = new ListView(activity);
+		view.addView(listView);
 		observers=new Vector<DataSetObserver>();
 		ListAdapter adapter=new ListAdapter() {			
 			@Override public int getCount()
@@ -61,6 +63,9 @@ public class AndroidUIColumnObserver implements ColumnObserver
 				{
 					view=new RelativeLayout(activity);
 				}
+				{
+					View v=view.findViewById(6);
+				}
 				RelativeLayout layout=(RelativeLayout)view;
 				Item item=column.contents.get(index);
 				int type=item.getType();
@@ -80,7 +85,7 @@ public class AndroidUIColumnObserver implements ColumnObserver
 								text.setTextColor(Color.DKGRAY);
 								text.setId(5);
 								RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-								lp.addRule(RelativeLayout.RIGHT_OF,2);
+								lp.addRule(RelativeLayout.RIGHT_OF,4);
 					        	lp.addRule(RelativeLayout.LEFT_OF,3);
 					        	lp.addRule(RelativeLayout.ABOVE,1);
 					        	text.setGravity(Gravity.BOTTOM);
@@ -207,7 +212,7 @@ public class AndroidUIColumnObserver implements ColumnObserver
 		};
 		
 		
-		view.setAdapter(adapter);
+		listView.setAdapter(adapter);
 	}
 	@Override public void onItemAdded(int index, Item item)
 	{
