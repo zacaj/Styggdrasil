@@ -11,9 +11,9 @@ import twitter4j.UserStreamAdapter;
 public class UserStream extends UserStreamAdapter
 {
 
-	TwitterHandler	handler;
+	AccountHandler	handler;
 
-	public UserStream(TwitterHandler _handler)
+	public UserStream(AccountHandler _handler)
 	{
 		handler = _handler;
 	}
@@ -24,7 +24,7 @@ public class UserStream extends UserStreamAdapter
 			@Override 
 			public void run()
 			{
-				handler.handleItem(new Tweet(status,handler));//TODO call on another thread
+				handler.handleItem(Tweet.createTweet(status,handler));
 			}
 		}).start();
 	}
