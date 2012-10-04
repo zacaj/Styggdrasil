@@ -70,16 +70,38 @@ public class TweetSelectListener implements OnClickListener
         	}
         	else
         	{
-        		Button button=new Button(v.getContext());
-            	LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-            	button.setText("Delete");
-            	button.setOnClickListener(new OnClickListener(){
-					@Override public void onClick(View v)
-					{
-						tweet.delete();
-					}
-            	});
-            	menu.addView(button,lp);
+	        	{
+	        		Button button=new Button(v.getContext());
+	            	LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+	            	button.setText("Delete");
+	            	button.setOnClickListener(new OnClickListener(){
+						@Override public void onClick(View v)
+						{
+							tweet.delete();
+						}
+	            	});
+	            	menu.addView(button,lp);
+	        	}
+	        	{
+	        		Button button=new Button(v.getContext());
+	            	LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+	            	button.setText("Undo");
+	            	button.setOnClickListener(new OnClickListener(){
+						@Override public void onClick(View v)
+						{
+							tweetBox.textField.setText(tweet.text);
+							tweetBox.inReplyTo=tweet.replyId;
+							tweet.delete();
+							activity.tweetView.removeAllViews();
+							activity.tweetView.addView(tweetBox.view);
+							if(activity.columnStack.contains(tweetBox))
+									activity.columnStack.remove(tweetBox);
+							activity.columnStack.add(tweetBox);
+							tweetBox.switchedTo();
+						}
+	            	});
+	            	menu.addView(button,lp);
+	        	}
         	}
         	
         	if(tweet.isFavorited)
@@ -108,6 +130,8 @@ public class TweetSelectListener implements OnClickListener
             	});
             	menu.addView(button,lp);
         	}
+        	menu.setOrientation(LinearLayout.HORIZONTAL);
+        	
         	RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
         	//lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         	lp.addRule(RelativeLayout.BELOW,1);

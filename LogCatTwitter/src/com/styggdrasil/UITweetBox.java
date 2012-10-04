@@ -27,7 +27,7 @@ public class UITweetBox extends UIColumn
 	public UITweetBox(final UITwitterActivity _activity,LinearLayout _buttons,AccountHandler _handler)
 	{
 		super(_activity);
-		inReplyTo=0;
+		inReplyTo=-1;
 		buttons=_buttons;
 		handler=_handler;
 		activity=_activity;
@@ -59,7 +59,7 @@ public class UITweetBox extends UIColumn
         	    public void onFocusChange(View v, boolean hasFocus) {
         	    	buttons.setVisibility(hasFocus==true?View.GONE:View.VISIBLE);
         	    	if(!hasFocus)
-    					activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+            	    	buttons.setVisibility(View.VISIBLE);
         	    }
         	});
 		}
@@ -81,7 +81,7 @@ public class UITweetBox extends UIColumn
 					else
 						handler.sendTweet(textField.getText().toString());
 					textField.setText("");
-					inReplyTo=0;
+					inReplyTo=-1;
 					textField.postDelayed(new Runnable()
 					{
 						@Override
@@ -90,6 +90,7 @@ public class UITweetBox extends UIColumn
 							InputMethodManager imm = (InputMethodManager)activity.getSystemService(
 								      Context.INPUT_METHOD_SERVICE);
 								imm.hideSoftInputFromWindow(textField.getWindowToken(), 0);
+		            	    buttons.setVisibility(View.VISIBLE);
 						}
 					}, 100);
 				}
