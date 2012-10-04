@@ -13,11 +13,15 @@ public class TweetSelectListener implements OnClickListener
 {
 	static LinearLayout menu=null;
 	static RelativeLayout currentTweet=null;
+	private UITweetBox tweetBox;
+	private UITwitterActivity activity;
 	
 	public Tweet tweet;
-	public TweetSelectListener(Tweet _tweet)
+	public TweetSelectListener(Tweet _tweet, UITwitterActivity _activity)
 	{
 		tweet=_tweet;
+		activity=_activity;
+		tweetBox=activity.tweetBox;
 	}
 
 	@Override public void onClick(View v)
@@ -39,7 +43,14 @@ public class TweetSelectListener implements OnClickListener
             	button.setOnClickListener(new OnClickListener(){
 					@Override public void onClick(View v)
 					{
-						
+						tweetBox.textField.setText("@"+tweet.user.username+" ");
+						tweetBox.inReplyTo=tweet.id;
+						activity.tweetView.removeAllViews();
+						activity.tweetView.addView(tweetBox.view);
+						if(activity.columnStack.contains(tweetBox))
+								activity.columnStack.remove(tweetBox);
+						activity.columnStack.add(tweetBox);
+						tweetBox.switchedTo();
 					}
             	});
             	menu.addView(button,lp);

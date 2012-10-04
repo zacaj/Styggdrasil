@@ -7,6 +7,7 @@ import twitter4j.AsyncTwitter;
 import twitter4j.AsyncTwitterFactory;
 import twitter4j.ResponseList;
 import twitter4j.Status;
+import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterAdapter;
 import twitter4j.TwitterException;
@@ -80,6 +81,12 @@ public class AccountHandler {
 	{
 		asyncFactory.getInstance().updateStatus(text);
 	}
+	public void sendTweet(String text,long inReplyTo)
+	{
+		StatusUpdate update=new StatusUpdate(text);
+		update.setInReplyToStatusId(inReplyTo);
+		asyncFactory.getInstance().updateStatus(update);
+	}
 	
 	public void updateHomeTimeline() {
 		final AccountHandler handler=this;
@@ -102,6 +109,7 @@ public class AccountHandler {
 	    twitter.addListener(listener);
 	    twitter.getHomeTimeline();//TODO change to use Paging based on settings
 	}
+	
 	public void handleItem(Item item)
 	{
 		if(items.put(item.time,item)==null)

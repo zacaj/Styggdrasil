@@ -24,10 +24,10 @@ public class UIColumnObserver extends UIColumn implements ColumnObserver
 {
 	public Column column;
 	public ListView listView;
-	public Activity activity;
+	public UITwitterActivity activity;
 	private Vector<DataSetObserver> observers;
 	
-	public UIColumnObserver(Column _column,Activity _activity)
+	public UIColumnObserver(Column _column,UITwitterActivity _activity)
 	{
 		super(_activity);
 		column=_column;
@@ -166,7 +166,7 @@ public class UIColumnObserver extends UIColumn implements ColumnObserver
 						}			
 						text.setText(tweet.text);
 					}
-					view.setOnClickListener(new TweetSelectListener(tweet));
+					view.setOnClickListener(new TweetSelectListener(tweet,activity));
 					break;
 				}
 				}

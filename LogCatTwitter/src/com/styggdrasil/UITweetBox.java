@@ -23,9 +23,11 @@ public class UITweetBox extends UIColumn
 	LinearLayout buttons;
 	AccountHandler handler;
 	UITwitterActivity activity;
+	public long	inReplyTo;
 	public UITweetBox(final UITwitterActivity _activity,LinearLayout _buttons,AccountHandler _handler)
 	{
 		super(_activity);
+		inReplyTo=0;
 		buttons=_buttons;
 		handler=_handler;
 		activity=_activity;
@@ -74,8 +76,12 @@ public class UITweetBox extends UIColumn
 				@Override public void onClick(View v)
 				{
 					activity.popColumnStack();
-					//handler.sendTweet(textField.getText().toString());
+					if(inReplyTo!=0)
+						handler.sendTweet(textField.getText().toString(),inReplyTo);
+					else
+						handler.sendTweet(textField.getText().toString());
 					textField.setText("");
+					inReplyTo=0;
 					textField.postDelayed(new Runnable()
 					{
 						@Override

@@ -29,9 +29,10 @@ import android.widget.TextView;
 public class UITwitterActivity extends Activity
 {
 	private RelativeLayout view;
-	private FrameLayout tweetView;
+	public FrameLayout tweetView;
 	public AccountHandler handler;
 	public Vector<UIColumn> columnStack;
+	public UITweetBox tweetBox;
 	
 	public void popColumnStack()
 	{
@@ -97,8 +98,8 @@ public class UITwitterActivity extends Activity
         	Button button=new Button(this);
         	LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
         	button.setText("New");
-        	UITweetBox box=new UITweetBox(this,buttons,handler);
-        	button.setOnClickListener(new ColumnButtonListener(box,tweetView,this));
+        	tweetBox=new UITweetBox(this,buttons,handler);
+        	button.setOnClickListener(new ColumnButtonListener(tweetBox,tweetView,this));
         	//button.setGravity(Gravity.RIGHT);
         	buttons.addView(button,lp);
         }
