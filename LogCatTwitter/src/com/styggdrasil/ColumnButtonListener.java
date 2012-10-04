@@ -22,5 +22,6 @@ public class ColumnButtonListener implements View.OnClickListener
 		if(activity.columnStack.contains(column))
 				activity.columnStack.remove(column);
 		activity.columnStack.add(column);
+		column.switchedTo();
 	}
 }

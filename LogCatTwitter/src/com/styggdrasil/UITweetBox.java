@@ -7,6 +7,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -21,11 +22,13 @@ public class UITweetBox extends UIColumn
 	EditText textField;
 	LinearLayout buttons;
 	AccountHandler handler;
-	public UITweetBox(final UITwitterActivity activity,LinearLayout _buttons,AccountHandler _handler)
+	UITwitterActivity activity;
+	public UITweetBox(final UITwitterActivity _activity,LinearLayout _buttons,AccountHandler _handler)
 	{
-		super(activity);
+		super(_activity);
 		buttons=_buttons;
 		handler=_handler;
+		activity=_activity;
 		{
 			layout=new RelativeLayout(activity);
 			view.addView(layout);
@@ -70,11 +73,19 @@ public class UITweetBox extends UIColumn
         	button.setOnClickListener(new OnClickListener(){
 				@Override public void onClick(View v)
 				{
+					activity.popColumnStack();
 					//handler.sendTweet(textField.getText().toString());
 					textField.setText("");
-					textField.clearFocus();
-					activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-					activity.popColumnStack();
+					textField.postDelayed(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							InputMethodManager imm = (InputMethodManager)activity.getSystemService(
+								      Context.INPUT_METHOD_SERVICE);
+								imm.hideSoftInputFromWindow(textField.getWindowToken(), 0);
+						}
+					}, 100);
 				}
         	});
         	layout.addView(button,lp);
@@ -87,8 +98,30 @@ public class UITweetBox extends UIColumn
         	//button.setGravity(Gravity.LEFT);
         	button.setId(3);
         	button.setText("Clear");
+        	button.setOnClickListener(new OnClickListener(){
+				@Override public void onClick(View v)
+				{
+					textField.setText("");
+				}
+        	});
         	layout.addView(button,lp);
 		}
+	}
+	@Override public void switchedTo()
+	{
+		//activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+		//((InputMethodManager)(activity.getSystemService(Context.INPUT_METHOD_SERVICE))).showSoftInput(textField, InputMethodManager.SHOW_IMPLICIT);
+		textField.requestFocus();
+		
+		textField.postDelayed(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.showSoftInput(textField, InputMethodManager.SHOW_IMPLICIT);
+			}
+		}, 100);
 	}
 
 }

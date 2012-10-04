@@ -63,10 +63,12 @@ public class UIColumnObserver extends UIColumn implements ColumnObserver
 				{
 					view=new RelativeLayout(activity);
 				}
+				RelativeLayout layout=(RelativeLayout)view;
 				{
 					View v=view.findViewById(6);
+					if(v!=null)
+						layout.removeView(v);
 				}
-				RelativeLayout layout=(RelativeLayout)view;
 				Item item=column.contents.get(index);
 				int type=item.getType();
 				switch(type)
@@ -85,7 +87,8 @@ public class UIColumnObserver extends UIColumn implements ColumnObserver
 								text.setTextColor(Color.DKGRAY);
 								text.setId(5);
 								RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-								lp.addRule(RelativeLayout.RIGHT_OF,4);
+								lp.addRule(RelativeLayout.RIGHT_OF,2);
+								//lp.addRule(RelativeLayout.RIGHT_OF,4);
 					        	lp.addRule(RelativeLayout.LEFT_OF,3);
 					        	lp.addRule(RelativeLayout.ABOVE,1);
 					        	text.setGravity(Gravity.BOTTOM);
@@ -229,6 +232,20 @@ public class UIColumnObserver extends UIColumn implements ColumnObserver
 		});
 	}
 	@Override public void onItemRemoved(int index, Item item)
+	{
+		activity.runOnUiThread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				for(DataSetObserver observer:observers)
+				{
+					observer.onChanged();
+				}
+			}
+		});	
+	}
+	@Override public void switchedTo()
 	{
 		activity.runOnUiThread(new Runnable()
 		{

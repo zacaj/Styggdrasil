@@ -3,7 +3,7 @@ package com.styggdrasil;
 import android.content.Context;
 import android.widget.FrameLayout;
 
-public class UIColumn
+public abstract class UIColumn
 {
 	public FrameLayout view;
 	
@@ -11,4 +11,6 @@ public class UIColumn
 	{
 		view=new FrameLayout(context);
 	}
+	
+	public abstract void switchedTo();
 }
