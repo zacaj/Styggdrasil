@@ -217,8 +217,9 @@ public class UIColumnObserver extends UIColumn implements ColumnObserver
 		
 		listView.setAdapter(adapter);
 	}
-	@Override public void onItemAdded(int index, Item item)
+	@Override public void onItemAdded(int index, final Item item)
 	{
+				//Log.i("Twitter Test","added "+((Tweet)item).text);
 		activity.runOnUiThread(new Runnable()
 		{
 			@Override
@@ -258,5 +259,10 @@ public class UIColumnObserver extends UIColumn implements ColumnObserver
 				}
 			}
 		});	
+	}
+	@Override public void switchedFrom()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

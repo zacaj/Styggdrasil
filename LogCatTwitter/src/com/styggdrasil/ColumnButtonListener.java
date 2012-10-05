@@ -18,6 +18,7 @@ public class ColumnButtonListener implements View.OnClickListener
 	public void onClick(View view)
 	{
 		tweetView.removeAllViews();
+		activity.columnStack.lastElement().switchedFrom();
 		tweetView.addView(column.view);
 		if(activity.columnStack.contains(column))
 				activity.columnStack.remove(column);

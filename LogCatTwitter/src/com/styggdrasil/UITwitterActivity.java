@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
@@ -38,9 +39,11 @@ public class UITwitterActivity extends Activity
 	{
 		if(columnStack.size()<=1)
 			return;
+		columnStack.lastElement().switchedFrom();
 		columnStack.remove(columnStack.size()-1);
 		tweetView.removeAllViews();
 		tweetView.addView(columnStack.lastElement().view);
+		columnStack.lastElement().switchedTo();
 	}
 	@Override public void onBackPressed()
 	{
@@ -57,23 +60,50 @@ public class UITwitterActivity extends Activity
         columnStack=new Vector<UIColumn>();
         
         setContentView(view=new RelativeLayout(this));
+        view.setId(1111);
+        final RelativeLayout bottomBar=new RelativeLayout(this);
+        {
+        	RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
+        	//lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        	lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        	view.addView(bottomBar,lp);
+        	bottomBar.setId(546);
+        }
+        {
+        	view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        	    @Override
+        	    public void onGlobalLayout() {
+        	    	final View activityRootView = findViewById(1111);
+        	        int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
+        	        if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
+        	            bottomBar.setVisibility(View.GONE);
+        	        }
+        	        else// if (heightDiff <-100) { // if more than 100 pixels, its probably a keyboard...
+        	        {
+        	            bottomBar.setVisibility(View.VISIBLE);
+        	        }
+        	     }
+        	});
+        }
         LinearLayout buttons=new LinearLayout(this);
         {
         	RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
-        	lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        	view.addView(buttons,lp);
+        	//lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        	lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        	bottomBar.addView(buttons,lp);
         	buttons.setId(746);
         }
         {
         	RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
-        	lp.addRule(RelativeLayout.ABOVE,buttons.getId());
+        	lp.addRule(RelativeLayout.ABOVE,bottomBar.getId());
         	lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
             view.addView(tweetView=new FrameLayout(this),lp);
+            tweetView.setId(324);
         }
         
 	    AccountHandler handler=new AccountHandler();
 	    Column column;
-	    handler.columns.add(column=new EveryColumn());
+	    handler.columns.add(column=new EveryColumn(this));
         {
         	UIColumnObserver observer=new UIColumnObserver(column,this);
         	Button button=new Button(this);
@@ -85,7 +115,7 @@ public class UITwitterActivity extends Activity
         	tweetView.addView(observer.view);  
         	columnStack.add(observer);
         }
-	    handler.columns.add(column=(new MentionColumn("zacaj")));
+	    handler.columns.add(column=(new MentionColumn("zacaj",this)));
         {
         	UIColumnObserver observer=new UIColumnObserver(column,this);
         	Button button=new Button(this);
@@ -94,14 +124,27 @@ public class UITwitterActivity extends Activity
         	button.setOnClickListener(new ColumnButtonListener(observer,tweetView,this));
         	buttons.addView(button,lp);
         }
+	    handler.columns.add(column=(new RetweetColumn("zacaj_",this)));
         {
+        	UIColumnObserver observer=new UIColumnObserver(column,this);
         	Button button=new Button(this);
         	LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+        	button.setText("Retweets");
+        	button.setOnClickListener(new ColumnButtonListener(observer,tweetView,this));
+        	buttons.addView(button,lp);
+        }
+        {
+        	Button button=new Button(this);
+        	RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
         	button.setText("New");
-        	tweetBox=new UITweetBox(this,buttons,handler);
+        	tweetBox=new UITweetBox(this,bottomBar,handler);
         	button.setOnClickListener(new ColumnButtonListener(tweetBox,tweetView,this));
         	//button.setGravity(Gravity.RIGHT);
-        	buttons.addView(button,lp);
+        	//lp.addRule(RelativeLayout.RIGHT_OF,746);
+        	//lp.addRule(RelativeLayout.BELOW,324);
+        	//lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        	lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        	bottomBar.addView(button,lp);
         }
         log("Initialising...");
 		String path=Environment.getExternalStorageDirectory().toString()+"/Android/data/com.zision.styggdrasil/";
@@ -118,7 +161,6 @@ public class UITwitterActivity extends Activity
 		    
 			handler.accessToken=accessToken;
 			handler.accessTokenSecret=accessTokenSecret;
-			handler.username="zacaj_";
 			if(restUrl!=null)
 				handler.restUrl=restUrl;
 			handler.start();

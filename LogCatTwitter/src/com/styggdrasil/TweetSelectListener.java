@@ -34,7 +34,10 @@ public class TweetSelectListener implements OnClickListener
 				currentTweet.removeView(currentTweet.findViewById(6));
 			menu.removeAllViews();
 			if(currentTweet==v)
+			{
+				currentTweet=null;
 				return;
+			}
 			menu.setOrientation(LinearLayout.HORIZONTAL);
         	{
         		Button button=new Button(v.getContext());
@@ -43,7 +46,9 @@ public class TweetSelectListener implements OnClickListener
             	button.setOnClickListener(new OnClickListener(){
 					@Override public void onClick(View v)
 					{
-						tweetBox.textField.setText("@"+tweet.user.username+" ");
+						String str="@"+tweet.user.username+" ";
+						tweetBox.textField.setText(str);
+						tweetBox.textField.setSelection(str.length());
 						tweetBox.inReplyTo=tweet.id;
 						activity.tweetView.removeAllViews();
 						activity.tweetView.addView(tweetBox.view);
@@ -133,9 +138,7 @@ public class TweetSelectListener implements OnClickListener
         	menu.setOrientation(LinearLayout.HORIZONTAL);
         	
         	RelativeLayout.LayoutParams lp=new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
-        	//lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        	lp.addRule(RelativeLayout.BELOW,1);
-        	//lp.addRule(RelativeLayout.BELOW,4);
+        	lp.addRule(RelativeLayout.BELOW,1);;
         	menu.setId(6);
         	((RelativeLayout) v).addView(menu,lp);
         	currentTweet=(RelativeLayout) v;

@@ -13,4 +13,5 @@ public abstract class UIColumn
 	}
 	
 	public abstract void switchedTo();
+	public abstract void switchedFrom();
 }

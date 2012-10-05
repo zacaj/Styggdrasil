@@ -23,6 +23,11 @@ public class Retweet extends Tweet
 		else
 			inReplyTo=handler.getLoadedTweet(replyId);
 	}
+	public Retweet(Status retweeted,User by, AccountHandler _handler)
+	{
+		super(retweeted,_handler);
+		
+	}
 	public int getType()
 	{
 		return type;

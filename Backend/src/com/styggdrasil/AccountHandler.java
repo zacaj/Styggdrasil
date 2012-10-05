@@ -67,14 +67,30 @@ public class AccountHandler {
 		streamFactory=new TwitterStreamFactory(config);
 		asyncFactory=new AsyncTwitterFactory(config);
 		twitterFactory=new TwitterFactory(config);
+		try
+		{
+			username=twitterFactory.getInstance().getScreenName();
+		}
+		catch (IllegalStateException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (TwitterException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		updateHomeTimeline();
 		
 		UserStream stream=new UserStream(this);
 		TwitterStream stream4j=streamFactory.getInstance();
 		stream4j.addListener(stream);
 		stream4j.user();
 		
+		updateHomeTimeline();
+		updateMentionsTimeline();
+		updateRetweetsTimeline();
 	}
 	
 	public void sendTweet(String text)
@@ -108,6 +124,48 @@ public class AccountHandler {
 	    AsyncTwitter twitter=asyncFactory.getInstance();
 	    twitter.addListener(listener);
 	    twitter.getHomeTimeline();//TODO change to use Paging based on settings
+	}
+	public void updateMentionsTimeline() {
+		final AccountHandler handler=this;
+		TwitterListener listener = new TwitterAdapter() {
+	        @Override public void gotMentions(ResponseList<Status> statuses) {
+	        	for(final Status status : statuses)
+	        	{
+	        		new Thread(new Runnable() {
+	        			@Override 
+						public void run()
+						{
+	        				handleItem(Tweet.createTweet(status, handler));//TODO make a factory(?) that will create Tweets/Retweets(/etc?) from Statuses
+						}
+	        		}).start();
+	        	}
+	        }
+	    };
+		
+	    AsyncTwitter twitter=asyncFactory.getInstance();
+	    twitter.addListener(listener);
+	    twitter.getMentions();//TODO change to use Paging based on settings
+	}
+	public void updateRetweetsTimeline() {
+		final AccountHandler handler=this;
+		TwitterListener listener = new TwitterAdapter() {//TODO currently this gives the tweet that WAS retweeted, instead of the retweet, so no way to tell who retweeted it, or time
+	        @Override public void gotRetweetsOfMe(ResponseList<Status> statuses) {
+	        	for(final Status status : statuses)
+	        	{
+	        		new Thread(new Runnable() {
+	        			@Override 
+						public void run()
+						{
+	        				handleItem(Tweet.createTweet(status, handler));//TODO make a factory(?) that will create Tweets/Retweets(/etc?) from Statuses
+						}
+	        		}).start();
+	        	}
+	        }
+	    };
+		
+	    AsyncTwitter twitter=asyncFactory.getInstance();
+	    twitter.addListener(listener);
+	    twitter.getRetweetsOfMe();//TODO change to use Paging based on settings
 	}
 	
 	public void handleItem(Item item)

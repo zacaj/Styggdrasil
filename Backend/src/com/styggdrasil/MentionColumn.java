@@ -1,13 +1,20 @@
 package com.styggdrasil;
 
+import android.app.Activity;
+
+/**
+ * Shows tweets containing the specified text
+ * @author Zack
+ *
+ */
 public class MentionColumn extends Column
 {
-	String username;
+	String text;
 	
-	public MentionColumn(String name)
+	public MentionColumn(String _text,Activity _activity)
 	{
-		super();
-		username=name;
+		super(_activity);
+		text=_text;
 	}
 	
 	@Override
@@ -16,7 +23,7 @@ public class MentionColumn extends Column
 		if(item instanceof Tweet)
 		{
 			Tweet tweet=(Tweet)item;
-			if(tweet.text.contains(username))
+			if(tweet.text.contains(text))
 			{
 				addItem(item);
 				return true;

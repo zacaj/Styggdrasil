@@ -89,9 +89,15 @@ public class UserStream extends UserStreamAdapter
 
 	}
 
-	@Override public void onRetweet(User arg0, User arg1, Status arg2)
+	@Override public void onRetweet(User arg0, final User arg1, final Status status)
 	{
-		// TODO Auto-generated method stub
+		new Thread(new Runnable() {
+			@Override 
+			public void run()
+			{
+				handler.handleItem(new Retweet(status,handler.getUser(arg1),handler));
+			}
+		}).start();
 
 	}
 
